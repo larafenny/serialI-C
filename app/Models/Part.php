@@ -19,4 +19,8 @@ class Part extends Model
         'Component_ID',
         'Device_SN'
     ];
+
+    public function device() {
+        return $this->belongsTo(Device::class, 'Device_SN', 'Serial_Number');
+    }
 }

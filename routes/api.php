@@ -9,3 +9,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/device/create', [DeviceController::class, 'createNewDevice']);
+Route::post('/device/{device_serial_number}/add-part', [DeviceController::class, 'addPartToDevice']);
