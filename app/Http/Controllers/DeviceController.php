@@ -11,7 +11,7 @@ use Illuminate\Http\Response;
 
 class DeviceController extends Controller
 {
-    public function createNewDevice(): Response
+    public function createNewDevice()
     {
         try {
             $serialNumber = Device::generateDeviceSerialNumber();
