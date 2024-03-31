@@ -19,4 +19,8 @@ class PartTest extends Model
         'Result',
         'Part_ID'
     ];
+
+    public function part() {
+        return $this->belongsTo(Part::class, 'Part_ID');
+    }
 }
