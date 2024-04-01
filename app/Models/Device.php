@@ -9,7 +9,7 @@ class Device extends Model
 {
     use HasFactory;
     protected $table = 'Device';
-    protected $primaryKey = 'ID';
+    protected $primaryKey = 'Serial_Number';
     public $incrementing = false;
     public $timestamps = false;
 
@@ -41,5 +41,9 @@ class Device extends Model
                 'Problem generating serial number for the new device. Error: ' .  $e->getMessage()
             );
         }
+    }
+
+    public function parts() {
+        return $this->hasMany(Part::class, 'Device_SN', 'Serial_Number');
     }
 }

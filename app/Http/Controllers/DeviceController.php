@@ -6,8 +6,8 @@ use App\Models\Device;
 use App\Models\Enums\DeviceStatus;
 use App\Models\Part;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class DeviceController extends Controller
 {
@@ -20,7 +20,10 @@ class DeviceController extends Controller
                 'Status' => DeviceStatus::InLavorazione
             ]);
 
-            return response()->json(['New device with serial number ' . $serialNumber . ' succesfully created.'], 201);
+            return response()->json([
+                'message' => 'New device with serial number ' . $serialNumber . ' succesfully created.'
+            ],
+                201);
         } catch (Exception $e) {
             throw new Exception('Error during creation of new device. Error: ' . $e->getMessage());
         }
@@ -50,6 +53,34 @@ class DeviceController extends Controller
         } catch (Exception $e) {
             throw new Exception('Error while adding the part ' . $part->Serial_Number .
                 ' to the device '. $deviceSerialNumber . ' Error: ' . $e->getMessage());
+        }
+    }
+
+    public function getDeviceInfo($deviceSerialNumber)
+    {
+        try {
+            $device = Device::where('Serial_Number', $deviceSerialNumber)->firstOrFail();
+            $parts = $device->parts()->get();
+
+            $partsInfo = $parts->map(function($part) {
+                return [
+                    'ID' => $part->ID,
+                    'Serial_number' => $part->Serial_Number,
+                    'Component_ID' => $part->Component_ID,
+                    'Device_SN' => $part->Device_SN,
+                ];
+            });
+
+            return response()->json([
+                'Device_Serial_Number' => $device->Serial_Number,
+                'Device_Status' => $device->Status,
+                'Parts_Info' => $partsInfo
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Device not found'], 404);
+        } catch (Exception $e) {
+            throw new Exception('Error retrieving info from device with serial number ' . $deviceSerialNumber .
+                ' Error: ' . $e->getMessage());
         }
     }
 }
