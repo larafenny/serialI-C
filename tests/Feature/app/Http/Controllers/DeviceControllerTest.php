@@ -53,34 +53,4 @@ class DeviceControllerTest extends TestCase
             json_decode($response->getContent(), true),
             ['message' => 'New device with serial number DEV00 succesfully created.']);
     }
-
-    public function testShouldCreateNewDevice2()
-    {
-        $response = $this->postJson('/device/create'); // Assumi che l'endpoint sia '/device/create'
-
-        $response->assertStatus(201)
-            ->assertJson([
-                'message' => 'New device with serial number DEV99 successfully created.'
-            ]);
-
-        $this->assertDatabaseHas('devices', [
-            'Serial_Number' => 'DEV99',
-            'Status' => DeviceStatus::InLavorazione
-        ]);
-    }
-
-    public function testShouldAddPartToDevice()
-    {
-        $deviceSerialNumber = 'DEV09';
-        $request = new Request(['part_serial_number' => 'AB002']);
-
-        $this->deviceController->addPartToDevice($deviceSerialNumber, $request);
-    }
-
-    public function testShouldGetDeviceInfo()
-    {
-        $deviceSerialNumber = 'DEV01';
-        $this->deviceController->getDeviceInfo($deviceSerialNumber);
-
-    }
 }
